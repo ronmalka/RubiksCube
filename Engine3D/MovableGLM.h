@@ -10,6 +10,7 @@ public:
 	void MyTranslate(const glm::vec3 delta, int mode);
 	void MyRotate(float angle, const glm::vec3 &vec, int mode);
 	void MyScale(const glm::vec3 scale);
+	void RotateTranslate(float angle, const glm::vec3& vec, int mode);
 	void ZeroTrans();
 private:
 	glm::mat4 trans;

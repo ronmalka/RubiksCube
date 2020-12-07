@@ -2,11 +2,18 @@
 #include "display.h"
 #include "renderer.h"
 #include "rubikscube.h"
-
-
+#include <Engine3D\renderer.h>
+#define R 0
+#define L 1
+#define U 2
+#define D 3
+#define B 4
+#define F 5
+#define CW 1
+#define CCW -1
+Display* myDisp;
 	void mouse_callback(GLFWwindow* window,int button, int action, int mods)
 	{	
-		
 		if(action == GLFW_PRESS )
 		{
 			Renderer* rndr = (Renderer*)glfwGetWindowUserPointer(window);
@@ -82,11 +89,71 @@
 				break;
 
 			case GLFW_KEY_U:
-				//scn->shapeTransformation(scn->xGlobalRotate,-5.f);
-				//cout<< "down: "<<endl;
-				rndr->MoveCamera(0, scn->xRotate, -0.4f);
+			{
+				for (int i = 0; i < 90;++i) {
+					scn->doRotate(U);
+					rndr->DrawAll();
+					scn->Motion();
+					myDisp->SwapBuffers();
+				}
+				scn->getWall(U)->rotate();
 				break;
-
+			}
+			case GLFW_KEY_D:
+			{
+				for (int i = 0; i < 90; ++i) {
+					scn->doRotate(D);
+					rndr->DrawAll();
+					scn->Motion();
+					myDisp->SwapBuffers();
+				}
+				scn->getWall(D)->rotate();
+				break;
+			}
+			case GLFW_KEY_R:
+			{
+				for (int i = 0; i < 90; ++i) {
+					scn->doRotate(R);
+					rndr->DrawAll();
+					scn->Motion();
+					myDisp->SwapBuffers();
+				}
+				scn->getWall(R)->rotate();
+				break;
+			}
+			case GLFW_KEY_L:
+			{
+				for (int i = 0; i < 90; ++i) {
+					scn->doRotate(L);
+					rndr->DrawAll();
+					scn->Motion();
+					myDisp->SwapBuffers();
+				}
+				scn->getWall(L)->rotate();
+				break;
+			}
+			case GLFW_KEY_F:
+			{
+				for (int i = 0; i < 90; ++i) {
+					scn->doRotate(F);
+					rndr->DrawAll();
+					scn->Motion();
+					myDisp->SwapBuffers();
+				}
+				scn->getWall(F)->rotate();
+				break;
+			}
+			case GLFW_KEY_B:
+			{
+				for (int i = 0; i < 90; ++i) {
+					scn->doRotate(B);
+					rndr->DrawAll();
+					scn->Motion();
+					myDisp->SwapBuffers();
+				}
+				scn->getWall(B)->rotate();
+				break;
+			}
 			default:
 				break;
 			}
@@ -95,7 +162,10 @@
 
 	void Init(Display &display)
 	{
+		
 		display.AddKeyCallBack(key_callback);
 		display.AddMouseCallBacks(mouse_callback,scroll_callback,cursor_position_callback);
 		display.AddResizeCallBack(window_size_callback);
+		myDisp = &display;
+
 	}

@@ -15,6 +15,14 @@ static void printMat(const glm::mat4 mat)
 
 RubiksCube::RubiksCube() : Scene()
 {
+	walls = new Wall * [6];
+	walls[R] = new Wall(glm::vec3(-1.f,0.f,0.f),CW);
+	walls[L] = new Wall(glm::vec3(1.f, 0.f, 0.f), CCW);
+	walls[U] = new Wall(glm::vec3(0.f, 1.f, 0.f), CW);
+	walls[D] = new Wall(glm::vec3(0.f, -1.f, 0.f), CCW);
+	walls[F] = new Wall(glm::vec3(0.f, 0.f, 1.f), CW);
+	walls[B] = new Wall(glm::vec3(0.f, 0.f, -1.f), CCW);
+
 }
 
 //RubiksCube::RubiksCube(float angle ,float relationWH, float near, float far) : Scene(angle,relationWH,near,far)
@@ -36,25 +44,43 @@ void RubiksCube::Init()
 
 	AddMaterial(texIDs,slots, 2);
 
-	for (int i = 0; i < 27; i++)
-	{
-		AddShape(Cube, -1, TRIANGLES);
-		SetShapeShader(i, 1);
-		SetShapeMaterial(0, 0);
-	
-	}
 	int pickCounter = 0;
 	int loc [3] = { -2,0,2 };
-	for (int z = 0; z < 3; z++)
+	rubCube = new MyCube* **[3];
+	for (int x = 0; x < 3; x++)
 	{
+		rubCube[x] = new MyCube* *[3];
 		for (int y = 0; y < 3; y++)
 		{
-			for (int x = 0; x < 3; x++)
+			rubCube[x][y] = new MyCube* [3];
+			for (int z = 0; z < 3; z++)
 			{
+				AddShape(Cube, -1, TRIANGLES);
+				SetShapeShader(pickCounter, 1);
+				SetShapeMaterial(0, 0);
 				pickedShape = pickCounter;
 				ShapeTransformation(xTranslate, loc[x]);
 				ShapeTransformation(yTranslate, loc[y]);
 				ShapeTransformation(zTranslate, loc[z]-2);
+				rubCube[x][y][z] = new MyCube(loc[x], loc[y],loc[z]-2,pickCounter);
+				if(rubCube[x][y][z]->getX() == -2){
+					walls[R]->setCubeAt(y,z,rubCube[x][y][z]);
+				}
+				else if (rubCube[x][y][z]->getX() == 2) {
+					walls[L]->setCubeAt(y, z, rubCube[x][y][z]);
+				}
+				if (rubCube[x][y][z]->getY() == -2) {
+					walls[D]->setCubeAt(x, z, rubCube[x][y][z]);
+				}
+				else if (rubCube[x][y][z]->getY() == 2) {
+					walls[U]->setCubeAt(x, z, rubCube[x][y][z]);
+				}
+				if (rubCube[x][y][z]->getZ() == -4) {
+					walls[B]->setCubeAt(x, y, rubCube[x][y][z]);
+				}
+				else if (rubCube[x][y][z]->getZ() == 0) {
+					walls[F]->setCubeAt(x, y, rubCube[x][y][z]);
+				}
 				pickCounter++;
 				pickedShape = -1;
 			}
@@ -126,6 +152,21 @@ unsigned int RubiksCube::TextureDesine(int width, int height)
 	glBindTexture(GL_TEXTURE_2D, 0);
 	delete[] data;
 	return(textures.size() - 1);
+}
+
+void RubiksCube::doRotate(int wall)
+{
+	Wall* myWall = walls[wall];
+	MyCube*** myCubes = myWall->getWall();
+	for (int i = 0; i < 3; ++i) {
+		for (int j = 0; j < 3; ++j) {
+			MyCube* c = myCubes[i][j];
+			pickedShape = c->getID();
+			shapes[pickedShape]->RotateTranslate(myWall->getDir() * 1.f, myWall->getAxis(), 0);
+			pickedShape = -1;
+		}
+	}
+	//walls[wall]->rotate();
 }
 
 RubiksCube::~RubiksCube(void)
