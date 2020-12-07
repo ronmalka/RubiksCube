@@ -83,8 +83,6 @@ Display* myDisp;
 				rndr->MoveCamera(0, scn->zTranslate, 0.4f);
 				break;
 			case GLFW_KEY_DOWN:
-				//scn->shapeTransformation(scn->xGlobalRotate,-5.f);
-				//cout<< "down: "<<endl;
 				rndr->MoveCamera(0, scn->zTranslate, -0.4f);
 				break;
 
