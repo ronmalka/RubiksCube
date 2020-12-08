@@ -2,6 +2,53 @@
 #include <iostream>
 #include "GL/glew.h"
 
+
+void RubiksCube::printMat()
+{
+	printf(" Wall Right: \n");
+	for (int i = 0; i < 3; i++)
+	{
+		for (int j = 0; j < 3; j++)
+			std::cout << " " << walls[R]->getWall()[i][j]->getID();
+		printf("\n");
+	}
+	printf(" Wall UP: \n");
+	for (int i = 0; i < 3; i++)
+	{
+		for (int j = 0; j < 3; j++)
+			std::cout << " " << walls[U]->getWall()[i][j]->getID();
+		printf("\n");
+	}
+	printf(" Wall DOWN: \n");
+	for (int i = 0; i < 3; i++)
+	{
+		for (int j = 0; j < 3; j++)
+			std::cout << " " << walls[D]->getWall()[i][j]->getID();
+		printf("\n");
+	}
+	printf(" Wall LEFT: \n");
+	for (int i = 0; i < 3; i++)
+	{
+		for (int j = 0; j < 3; j++)
+			std::cout << " " << walls[L]->getWall()[i][j]->getID();
+		printf("\n");
+	}
+	printf(" Wall BELOW: \n");
+	for (int i = 0; i < 3; i++)
+	{
+		for (int j = 0; j < 3; j++)
+			std::cout << " " << walls[B]->getWall()[i][j]->getID();
+		printf("\n");
+	}
+	printf(" Wall FORWARD: \n");
+	for (int i = 0; i < 3; i++)
+	{
+		for (int j = 0; j < 3; j++)
+			std::cout << " " << walls[F]->getWall()[i][j]->getID();
+		printf("\n");
+	}
+}
+
 static void printMat(const glm::mat4 mat)
 {
 	std::cout<<" matrix:"<<std::endl;
@@ -16,12 +63,12 @@ static void printMat(const glm::mat4 mat)
 RubiksCube::RubiksCube() : Scene()
 {
 	walls = new Wall * [6];
-	walls[R] = new Wall(glm::vec3(-1.f,0.f,0.f),CW);
-	walls[L] = new Wall(glm::vec3(1.f, 0.f, 0.f), CCW);
+	walls[R] = new Wall(glm::vec3(1.f,0.f ,0.f),CW);
+	walls[L] = new Wall(glm::vec3(-1.f, 0.f, 0.f), CCW);
 	walls[U] = new Wall(glm::vec3(0.f, 1.f, 0.f), CW);
 	walls[D] = new Wall(glm::vec3(0.f, -1.f, 0.f), CCW);
 	walls[F] = new Wall(glm::vec3(0.f, 0.f, 1.f), CW);
-	walls[B] = new Wall(glm::vec3(0.f, 0.f, -1.f), CCW);
+	walls[B] = new Wall(glm::vec3(0.f, 0.f, -1.f),CCW);
 
 }
 
@@ -46,40 +93,41 @@ void RubiksCube::Init()
 
 	int pickCounter = 0;
 	int loc [3] = { -2,0,2 };
-	rubCube = new MyCube* **[3];
+	//rubCube = new MyCube* **[3];
 	for (int x = 0; x < 3; x++)
 	{
-		rubCube[x] = new MyCube* *[3];
+		//rubCube[z] = new MyCube* *[3];
 		for (int y = 0; y < 3; y++)
 		{
-			rubCube[x][y] = new MyCube* [3];
+			//rubCube[y][z] = new MyCube* [3];
 			for (int z = 0; z < 3; z++)
 			{
 				AddShape(Cube, -1, TRIANGLES);
 				SetShapeShader(pickCounter, 1);
 				SetShapeMaterial(0, 0);
 				pickedShape = pickCounter;
-				ShapeTransformation(xTranslate, loc[x]);
-				ShapeTransformation(yTranslate, loc[y]);
-				ShapeTransformation(zTranslate, loc[z]-2);
-				rubCube[x][y][z] = new MyCube(loc[x], loc[y],loc[z]-2,pickCounter);
-				if(rubCube[x][y][z]->getX() == -2){
-					walls[R]->setCubeAt(y,z,rubCube[x][y][z]);
+				ShapeTransformation(xTranslate, -2 + 2*x);
+				ShapeTransformation(yTranslate, - 2 + 2*y);
+				ShapeTransformation(zTranslate, -2 +2*z);
+				MyCube* c = new MyCube(-2 + 2 * x, -2 + 2 * y, -2 + 2 * z,pickCounter);
+				std::cout << pickCounter << "  "<<"loc  ( x  "<< x << " ," << " y "<< y << " ," << " z  "<< z << ")" <<std::endl;
+				if (x == 0) {
+					walls[L]->setCubeAt(y,z,c);
 				}
-				else if (rubCube[x][y][z]->getX() == 2) {
-					walls[L]->setCubeAt(y, z, rubCube[x][y][z]);
+				else if (x == 2) {
+					walls[R]->setCubeAt(y,2-z,c);
 				}
-				if (rubCube[x][y][z]->getY() == -2) {
-					walls[D]->setCubeAt(x, z, rubCube[x][y][z]);
+				if (y==0) {
+					walls[D]->setCubeAt(2-x,z,c);
 				}
-				else if (rubCube[x][y][z]->getY() == 2) {
-					walls[U]->setCubeAt(x, z, rubCube[x][y][z]);
+				else if (y == 2) {
+					walls[U]->setCubeAt(x,z,c);
 				}
-				if (rubCube[x][y][z]->getZ() == -4) {
-					walls[B]->setCubeAt(x, y, rubCube[x][y][z]);
+				if (z == 0) {
+					walls[B]->setCubeAt(x,y,c);
 				}
-				else if (rubCube[x][y][z]->getZ() == 0) {
-					walls[F]->setCubeAt(x, y, rubCube[x][y][z]);
+				else if (z == 2) {
+					walls[F]->setCubeAt(x,2-y,c);
 				}
 				pickCounter++;
 				pickedShape = -1;
@@ -87,6 +135,7 @@ void RubiksCube::Init()
 		}
 
 	}
+	printMat();
 	
 	
 	//ReadPixel(); //uncomment when you are reading from the z-buffer
@@ -152,6 +201,35 @@ unsigned int RubiksCube::TextureDesine(int width, int height)
 	glBindTexture(GL_TEXTURE_2D, 0);
 	delete[] data;
 	return(textures.size() - 1);
+}
+
+void RubiksCube::switchRowCols(MyCube*** arr)
+{
+	for (int i = 0; i < 3; ++i) {
+		for (int j = 0; j < i; ++j) {
+			MyCube* tmp = arr[i][j];
+			arr[i][j] = arr[j][i];
+			arr[j][i] = tmp;
+		}
+	}
+	for (int i = 0; i < 3 / 2; ++i) {
+		for (int j = 0; j < 3; ++j) {
+			MyCube* tmp = arr[i][j];
+			arr[i][j] = arr[i + 2][j];
+			arr[i + 2][j] = tmp;
+		}
+	}
+}
+
+void RubiksCube::reverseRows(MyCube*** arr)
+{
+	for (int i = 0; i < 3; ++i) {
+		for (int j = 0; j < 3 / 2; ++j) {
+			MyCube* tmp = arr[i][j];
+			arr[i][j] = arr[i][j + 2];
+			arr[i][j + 2]= tmp;
+		}
+	}
 }
 
 void RubiksCube::doRotate(int wall)

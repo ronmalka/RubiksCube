@@ -1,7 +1,7 @@
 #pragma once
 #include "scene.h"
-#include <build\RubiksCube\MyCube.h>
-#include <build\RubiksCube\Wall.h>
+#include "MyCube.h"
+#include "Wall.h"
 
 #define R 0
 #define L 1
@@ -25,13 +25,16 @@ public:
 	void Motion();
 	
 	unsigned int TextureDesine(int width, int height);
-	inline MyCube**** getRub() { return rubCube; };
+	//inline MyCube**** getRub() { return rubCube; };
+	void switchRowCols(MyCube*** arr);
+	void reverseRows(MyCube*** arr);
 	inline void setPicked(int i) { pickedShape = i; };
 	inline Wall* getWall(int type) { return walls[type]; };
 	void doRotate(int wall);
+	void printMat();
 	~RubiksCube(void);
 private:
-	MyCube**** rubCube;
+	//MyCube**** rubCube;
 	Wall** walls;
 };
 

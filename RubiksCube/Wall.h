@@ -1,5 +1,5 @@
 #pragma once
-#include <build\RubiksCube\MyCube.h>
+#include "MyCube.h"
 #include "glm/glm.hpp"
 class Wall
 {
@@ -11,6 +11,7 @@ public:
 	int getDir() { return dir; };
 	void rotate();
 	void printMat();
+	void swap(MyCube* c1, MyCube* c2);
 private:
 	MyCube*** wallOfCubes;
 	glm::vec3 axisOfRotate;

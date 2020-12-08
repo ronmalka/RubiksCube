@@ -50,9 +50,9 @@ void  MovableGLM::MyScale(const glm::vec3 scale)
 
 void MovableGLM::RotateTranslate(float angle, const glm::vec3& vec, int mode)
 {
-	glm::mat4 t = glm::translate(glm::mat4(1),glm::vec3(0.f,0.f,-2.f));
-	glm::mat4 t1 = glm::translate(glm::mat4(1), glm::vec3(0.f, 0.f, 2.f));
-	glm::mat4 tmp_rot = t* glm::rotate(glm::mat4(1), angle, vec)*t1;
+	//glm::mat4 t = glm::translate(glm::mat4(1),glm::vec3(-2.f,-2.f,-2.f));
+	//glm::mat4 t1 = glm::translate(glm::mat4(1), glm::vec3(2.f, 2.f, 2.f));
+	glm::mat4 tmp_rot = glm::rotate(glm::mat4(1), angle, vec);
 	rot = tmp_rot * rot;
 }
 
