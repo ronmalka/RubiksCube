@@ -4,6 +4,7 @@
 #include "rubikscube.h"
 #include <Engine3D\renderer.h>
 #include <iostream>
+#include <random>
 #define R 0
 #define L 1
 #define U 2
@@ -12,7 +13,17 @@
 #define F 5
 #define CW 1
 #define CCW -1
+
 Display* myDisp;
+void doRotate(RubiksCube* scn,Renderer* rndr,int wall) {
+	for (float i = 0; i < 90.f; ++i) {
+		scn->doRotate(wall);
+		rndr->DrawAll();
+		scn->Motion();
+		myDisp->SwapBuffers();
+	}
+	scn->getWall(wall)->rotate();
+}
 	void mouse_callback(GLFWwindow* window,int button, int action, int mods)
 	{	
 		if(action == GLFW_PRESS )
@@ -30,7 +41,6 @@ Display* myDisp;
 	{
 		Renderer* rndr = (Renderer*)glfwGetWindowUserPointer(window);
 		RubiksCube* scn = (RubiksCube*)rndr->GetScene();
-		std::cout << xoffset << " " << yoffset << std::endl;
 		if (yoffset > 0) {
 			rndr->MoveCamera(0, scn->zTranslate, 0.4f);
 		}
@@ -86,68 +96,42 @@ Display* myDisp;
 
 			case GLFW_KEY_U:
 			{
-				for (float i = 0; i < 90.f;++i) {
-					scn->doRotate(U);
-					rndr->DrawAll();
-					scn->Motion();
-					myDisp->SwapBuffers();
-				}
-				scn->getWall(U)->rotate();
+				doRotate(scn,rndr, U);
 				break;
 			}
 			case GLFW_KEY_D:
 			{
-				for (float i = 0; i < 90.f; ++i) {
-					scn->doRotate(D);
-					rndr->DrawAll();
-					scn->Motion();
-					myDisp->SwapBuffers();
-				}
-				scn->getWall(D)->rotate();
+				doRotate(scn, rndr, D);
 				break;
 			}
 			case GLFW_KEY_R:
 			{
-				for (float i = 0; i < 90.f; ++i) {
-					scn->doRotate(R);
-					rndr->DrawAll();
-					scn->Motion();
-					myDisp->SwapBuffers();
-				}
-				scn->getWall(R)->rotate();
+				doRotate(scn, rndr, R);
 				break;
 			}
 			case GLFW_KEY_L:
 			{
-				for (float i = 0; i < 90.f; ++i) {
-					scn->doRotate(L);
-					rndr->DrawAll();
-					scn->Motion();
-					myDisp->SwapBuffers();
-				}
-				scn->getWall(L)->rotate();
+				doRotate(scn, rndr, L);
 				break;
 			}
 			case GLFW_KEY_F:
 			{
-				for (float i = 0; i < 90.f; ++i) {
-					scn->doRotate(F);
-					rndr->DrawAll();
-					scn->Motion();
-					myDisp->SwapBuffers();
-				}
-				scn->getWall(F)->rotate();
+				doRotate(scn, rndr, F);
 				break;
 			}
 			case GLFW_KEY_B:
 			{
-				for (float i = 0; i < 90.f; ++i) {
-					scn->doRotate(B);
-					rndr->DrawAll();
-					scn->Motion();
-					myDisp->SwapBuffers();
+				doRotate(scn, rndr, B);
+				break;
+			}
+			case GLFW_KEY_M:
+			{
+				std::random_device generator;
+				std::uniform_int_distribution<int> distribution(0, 5);
+				for (int k = 0; k < 10; ++k) {
+					int dice_roll = distribution(generator);
+					doRotate(scn, rndr, dice_roll);
 				}
-				scn->getWall(B)->rotate();
 				break;
 			}
 			case GLFW_KEY_Z:

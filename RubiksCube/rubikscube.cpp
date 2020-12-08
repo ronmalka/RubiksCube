@@ -95,13 +95,10 @@ void RubiksCube::Init()
 
 	int pickCounter = 0;
 	int loc [3] = { -2,0,2 };
-	//rubCube = new MyCube* **[3];
 	for (int x = 0; x < 3; x++)
 	{
-		//rubCube[z] = new MyCube* *[3];
 		for (int y = 0; y < 3; y++)
 		{
-			//rubCube[y][z] = new MyCube* [3];
 			for (int z = 0; z < 3; z++)
 			{
 				AddShape(Cube, -1, TRIANGLES);
@@ -137,7 +134,7 @@ void RubiksCube::Init()
 		}
 
 	}
-	printMat();
+	//printMat();
 	
 	
 	//ReadPixel(); //uncomment when you are reading from the z-buffer
