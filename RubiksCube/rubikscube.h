@@ -16,7 +16,7 @@ class RubiksCube : public Scene
 {
 public:
 	
-	RubiksCube();
+	RubiksCube(int _n);
 	void Init();
 	void Update(const glm::mat4 &MVP,const glm::mat4 &Model,const int  shaderIndx);
 	
@@ -39,6 +39,7 @@ public:
 	~RubiksCube(void);
 private:
 	//MyCube**** rubCube;
+	int n;
 	Wall** walls;
 	int globalDir;
 	float globalSpeed;

@@ -11,11 +11,12 @@ int main(int argc,char *argv[])
 	const float FAR = 1000.0f;
 	const int infoIndx = 2; 
 	std::list<int> x, y;
+	int n_Bonus = 3; // <<< Cube Size
 	x.push_back(DISPLAY_WIDTH );
 	y.push_back(DISPLAY_HEIGHT);
 	Display display(DISPLAY_WIDTH, DISPLAY_HEIGHT, "OpenGL");
 	Renderer* rndr = new Renderer(CAMERA_ANGLE, (float)DISPLAY_WIDTH  / DISPLAY_HEIGHT, NEAR, FAR); // adding a camera
-	RubiksCube *scn = new RubiksCube();  //initializing scene
+	RubiksCube *scn = new RubiksCube(n_Bonus);  //initializing scene
 	
 	Init(display); //adding callback functions
 	scn->Init();    //adding shaders, textures, shapes to scene
@@ -25,6 +26,7 @@ int main(int argc,char *argv[])
 	rndr->Create2Dmaterial(1);
 	//Orthographic camera.
 	rndr->AddCamera(glm::vec3(0,0,0),0,1,-1,1,infoIndx);
+	rndr->MoveCamera(0, scn->zTranslate, +0.8f* n_Bonus);
 	rndr->BindViewport2D(infoIndx);
 
 	while(!display.CloseWindow())

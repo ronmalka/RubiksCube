@@ -6,44 +6,44 @@
 void RubiksCube::printMat()
 {
 	printf(" Wall Right: \n");
-	for (int i = 0; i < 3; i++)
+	for (int i = 0; i < n; i++)
 	{
-		for (int j = 0; j < 3; j++)
+		for (int j = 0; j < n; j++)
 			std::cout << " " << walls[R]->getWall()[i][j]->getID();
 		printf("\n");
 	}
 	printf(" Wall UP: \n");
-	for (int i = 0; i < 3; i++)
+	for (int i = 0; i < n; i++)
 	{
-		for (int j = 0; j < 3; j++)
+		for (int j = 0; j < n; j++)
 			std::cout << " " << walls[U]->getWall()[i][j]->getID();
 		printf("\n");
 	}
 	printf(" Wall DOWN: \n");
-	for (int i = 0; i < 3; i++)
+	for (int i = 0; i < n; i++)
 	{
-		for (int j = 0; j < 3; j++)
+		for (int j = 0; j < n; j++)
 			std::cout << " " << walls[D]->getWall()[i][j]->getID();
 		printf("\n");
 	}
 	printf(" Wall LEFT: \n");
-	for (int i = 0; i < 3; i++)
+	for (int i = 0; i < n; i++)
 	{
-		for (int j = 0; j < 3; j++)
+		for (int j = 0; j < n; j++)
 			std::cout << " " << walls[L]->getWall()[i][j]->getID();
 		printf("\n");
 	}
-	printf(" Wall BELOW: \n");
-	for (int i = 0; i < 3; i++)
+	printf(" Wall BACK: \n");
+	for (int i = 0; i < n; i++)
 	{
-		for (int j = 0; j < 3; j++)
+		for (int j = 0; j < n; j++)
 			std::cout << " " << walls[B]->getWall()[i][j]->getID();
 		printf("\n");
 	}
 	printf(" Wall FORWARD: \n");
-	for (int i = 0; i < 3; i++)
+	for (int i = 0; i < n; i++)
 	{
-		for (int j = 0; j < 3; j++)
+		for (int j = 0; j < n; j++)
 			std::cout << " " << walls[F]->getWall()[i][j]->getID();
 		printf("\n");
 	}
@@ -60,17 +60,18 @@ static void printMat(const glm::mat4 mat)
 	}
 }
 
-RubiksCube::RubiksCube() : Scene()
+RubiksCube::RubiksCube(int _n) : Scene()
 {
-	walls = new Wall * [6];
-	walls[R] = new Wall(glm::vec3(1.f,0.f ,0.f),CW,&globalDir);
-	walls[L] = new Wall(glm::vec3(-1.f, 0.f, 0.f), CW, &globalDir);
-	walls[U] = new Wall(glm::vec3(0.f, 1.f, 0.f), CW, &globalDir);
-	walls[D] = new Wall(glm::vec3(0.f, -1.f, 0.f), CW, &globalDir);
-	walls[F] = new Wall(glm::vec3(0.f, 0.f, 1.f), CW, &globalDir);
-	walls[B] = new Wall(glm::vec3(0.f, 0.f, -1.f),CW, &globalDir);
+	n = _n; // CHANGE THIS TO SHOW THE BONUS!
 	globalDir = 1;
 	globalSpeed = 5;
+	walls = new Wall * [6];
+	walls[R] = new Wall(glm::vec3(1.f,0.f ,0.f),CW,&globalDir,n);
+	walls[L] = new Wall(glm::vec3(-1.f, 0.f, 0.f), CW, &globalDir,n);
+	walls[U] = new Wall(glm::vec3(0.f, 1.f, 0.f), CW, &globalDir,n);
+	walls[D] = new Wall(glm::vec3(0.f, -1.f, 0.f), CW, &globalDir,n);
+	walls[F] = new Wall(glm::vec3(0.f, 0.f, 1.f), CW, &globalDir,n);
+	walls[B] = new Wall(glm::vec3(0.f, 0.f, -1.f),CW, &globalDir,n);
 
 }
 
@@ -95,38 +96,37 @@ void RubiksCube::Init()
 
 	int pickCounter = 0;
 	int loc [3] = { -2,0,2 };
-	for (int x = 0; x < 3; x++)
+	for (int x = 0; x < n; x++)
 	{
-		for (int y = 0; y < 3; y++)
+		for (int y = 0; y < n; y++)
 		{
-			for (int z = 0; z < 3; z++)
+			for (int z = 0; z < n; z++)
 			{
 				AddShape(Cube, -1, TRIANGLES);
 				SetShapeShader(pickCounter, 1);
 				SetShapeMaterial(0, 0);
 				pickedShape = pickCounter;
-				ShapeTransformation(xTranslate, -2 + 2*x);
-				ShapeTransformation(yTranslate, - 2 + 2*y);
-				ShapeTransformation(zTranslate, -2 +2*z);
-				MyCube* c = new MyCube(-2 + 2 * x, -2 + 2 * y, -2 + 2 * z,pickCounter);
-				std::cout << pickCounter << "  "<<"loc  ( x  "<< x << " ," << " y "<< y << " ," << " z  "<< z << ")" <<std::endl;
+				ShapeTransformation(xTranslate, -(n-1) + 2*x);
+				ShapeTransformation(yTranslate, -(n-1) + 2*y);
+				ShapeTransformation(zTranslate, -(n-1) +2*z);
+				MyCube* c = new MyCube(-(n - 1) + 2 * x, -(n - 1) + 2 * y, -(n - 1) + 2 * z,pickCounter);
 				if (x == 0) {
 					walls[L]->setCubeAt(y,z,c);
 				}
-				else if (x == 2) {
-					walls[R]->setCubeAt(y,2-z,c);
+				else if (x == n-1) {
+					walls[R]->setCubeAt(y,n-1-z,c);
 				}
 				if (y==0) {
-					walls[D]->setCubeAt(2-x,z,c);
+					walls[D]->setCubeAt(n-1-x,z,c);
 				}
-				else if (y == 2) {
+				else if (y == n-1) {
 					walls[U]->setCubeAt(x,z,c);
 				}
 				if (z == 0) {
 					walls[B]->setCubeAt(x,y,c);
 				}
-				else if (z == 2) {
-					walls[F]->setCubeAt(x,2-y,c);
+				else if (z == n-1) {
+					walls[F]->setCubeAt(x,n-1-y,c);
 				}
 				pickCounter++;
 				pickedShape = -1;
@@ -237,8 +237,8 @@ void RubiksCube::doRotate(int wall)
 {
 	Wall* myWall = walls[wall];
 	MyCube*** myCubes = myWall->getWall();
-	for (int i = 0; i < 3; ++i) {
-		for (int j = 0; j < 3; ++j) {
+	for (int i = 0; i < n; ++i) {
+		for (int j = 0; j < n; ++j) {
 			MyCube* c = myCubes[i][j];
 			pickedShape = c->getID();
 			shapes[pickedShape]->RotateTranslate(myWall->getDir()*globalDir * 1.f, myWall->getAxis(), 0);
