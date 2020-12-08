@@ -3,7 +3,7 @@
 
 
 
-Wall::Wall(glm::vec3 _axisOfRotate, int _dir) : axisOfRotate(_axisOfRotate), dir(_dir)
+Wall::Wall(glm::vec3 _axisOfRotate, int _dir,int* _globalDir) : axisOfRotate(_axisOfRotate), dir(_dir), globalDir(_globalDir)
 {
 	wallOfCubes = new MyCube * *[3];
 	for (int i = 0; i < 3;i++) {
@@ -38,7 +38,7 @@ void Wall::rotate()
 			wallOfCubes[j][i]->setID(tmp);
 		}
 	}
-	if (dir == 1 ) {
+	if (dir*(*globalDir) == 1 ) {
 		
 		for (int i = 0; i < 3; ++i) {
 			for (int j = 0; j < 3 / 2; ++j) {

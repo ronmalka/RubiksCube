@@ -63,12 +63,14 @@ static void printMat(const glm::mat4 mat)
 RubiksCube::RubiksCube() : Scene()
 {
 	walls = new Wall * [6];
-	walls[R] = new Wall(glm::vec3(1.f,0.f ,0.f),CW);
-	walls[L] = new Wall(glm::vec3(-1.f, 0.f, 0.f), CCW);
-	walls[U] = new Wall(glm::vec3(0.f, 1.f, 0.f), CW);
-	walls[D] = new Wall(glm::vec3(0.f, -1.f, 0.f), CCW);
-	walls[F] = new Wall(glm::vec3(0.f, 0.f, 1.f), CW);
-	walls[B] = new Wall(glm::vec3(0.f, 0.f, -1.f),CCW);
+	walls[R] = new Wall(glm::vec3(1.f,0.f ,0.f),CW,&globalDir);
+	walls[L] = new Wall(glm::vec3(-1.f, 0.f, 0.f), CW, &globalDir);
+	walls[U] = new Wall(glm::vec3(0.f, 1.f, 0.f), CW, &globalDir);
+	walls[D] = new Wall(glm::vec3(0.f, -1.f, 0.f), CW, &globalDir);
+	walls[F] = new Wall(glm::vec3(0.f, 0.f, 1.f), CW, &globalDir);
+	walls[B] = new Wall(glm::vec3(0.f, 0.f, -1.f),CW, &globalDir);
+	globalDir = 1;
+	globalSpeed = 5;
 
 }
 
@@ -170,6 +172,8 @@ void RubiksCube::Update(const glm::mat4 &MVP,const glm::mat4 &Model,const int  s
 
 void RubiksCube::WhenRotate()
 {
+	//MyRotate(-xrel / 2.0f, glm::vec3(0, 1, 0), 0);
+	//MyRotate(-yrel / 2.0f, glm::vec3(1, 0, 0), 1);
 }
 
 void RubiksCube::WhenTranslate()
@@ -240,7 +244,7 @@ void RubiksCube::doRotate(int wall)
 		for (int j = 0; j < 3; ++j) {
 			MyCube* c = myCubes[i][j];
 			pickedShape = c->getID();
-			shapes[pickedShape]->RotateTranslate(myWall->getDir() * 1.f, myWall->getAxis(), 0);
+			shapes[pickedShape]->RotateTranslate(myWall->getDir()*globalDir * 1.f, myWall->getAxis(), 0);
 			pickedShape = -1;
 		}
 	}

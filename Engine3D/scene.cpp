@@ -151,8 +151,6 @@ bool Scene::Picking(unsigned char data[4])
 //return coordinates in global system for a tip of arm position is local system 
 void Scene::MouseProccessing(int button, int xrel, int yrel)
 {
-	//if (pickedShape == -1)
-	//{
 	if (button == 1)
 	{
 

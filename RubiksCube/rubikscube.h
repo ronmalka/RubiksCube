@@ -9,8 +9,8 @@
 #define D 3
 #define B 4
 #define F 5
-#define CW 1
-#define CCW -1
+#define CW -1
+#define CCW 1
 
 class RubiksCube : public Scene
 {
@@ -29,6 +29,10 @@ public:
 	void switchRowCols(MyCube*** arr);
 	void reverseRows(MyCube*** arr);
 	inline void setPicked(int i) { pickedShape = i; };
+	inline void setGlobalDir() { globalDir = -globalDir; };
+	inline void decGlobalSpeed() { globalSpeed = globalSpeed*3; };
+	inline void incGlobalSpeed() { globalSpeed = globalSpeed/3; };
+	inline int getGlobalSpeed() { return globalSpeed; };
 	inline Wall* getWall(int type) { return walls[type]; };
 	void doRotate(int wall);
 	void printMat();
@@ -36,5 +40,7 @@ public:
 private:
 	//MyCube**** rubCube;
 	Wall** walls;
+	int globalDir;
+	float globalSpeed;
 };
 

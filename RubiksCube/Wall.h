@@ -4,7 +4,7 @@
 class Wall
 {
 public:
-	Wall(glm::vec3 _axisOfRotate,int _dir);
+	Wall(glm::vec3 _axisOfRotate,int _dir,int* _globalDir);
 	void setCubeAt(int i,int j, MyCube* cube);
 	MyCube*** getWall() { return wallOfCubes; };
 	glm::vec3 getAxis() { return axisOfRotate; };
@@ -16,5 +16,6 @@ private:
 	MyCube*** wallOfCubes;
 	glm::vec3 axisOfRotate;
 	int dir;
+	int* globalDir;
 };
 
