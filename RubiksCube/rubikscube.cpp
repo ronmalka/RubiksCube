@@ -1,6 +1,8 @@
 #include "rubikscube.h"
 #include <iostream>
 #include "GL/glew.h"
+#define Max_Sleep 10
+#define Min_Sleep 0
 
 
 void RubiksCube::printMat()
@@ -9,7 +11,8 @@ void RubiksCube::printMat()
 	for (int i = 0; i < n; i++)
 	{
 		for (int j = 0; j < n; j++)
-			std::cout << " " << walls[R]->getWall()[i][j]->getID();
+			std::cout << " " << walls[myRight]->getWall()[i][j]->getID();
+			
 		printf("\n");
 	}
 	printf(" Wall UP: \n");
@@ -30,7 +33,7 @@ void RubiksCube::printMat()
 	for (int i = 0; i < n; i++)
 	{
 		for (int j = 0; j < n; j++)
-			std::cout << " " << walls[L]->getWall()[i][j]->getID();
+			std::cout << " " << walls[myLeft]->getWall()[i][j]->getID();
 		printf("\n");
 	}
 	printf(" Wall BACK: \n");
@@ -64,10 +67,10 @@ RubiksCube::RubiksCube(int _n) : Scene()
 {
 	n = _n; // CHANGE THIS TO SHOW THE BONUS!
 	globalDir = 1;
-	globalSpeed = 5;
+	globalSpeed = Min_Sleep;
 	walls = new Wall * [6];
-	walls[R] = new Wall(glm::vec3(1.f,0.f ,0.f),CW,&globalDir,n);
-	walls[L] = new Wall(glm::vec3(-1.f, 0.f, 0.f), CW, &globalDir,n);
+	walls[myRight] = new Wall(glm::vec3(1.f,0.f ,0.f),CW,&globalDir,n);
+	walls[myLeft] = new Wall(glm::vec3(-1.f, 0.f, 0.f), CW, &globalDir,n);
 	walls[U] = new Wall(glm::vec3(0.f, 1.f, 0.f), CW, &globalDir,n);
 	walls[D] = new Wall(glm::vec3(0.f, -1.f, 0.f), CW, &globalDir,n);
 	walls[F] = new Wall(glm::vec3(0.f, 0.f, 1.f), CW, &globalDir,n);
@@ -80,11 +83,12 @@ RubiksCube::RubiksCube(int _n) : Scene()
 //}
 
 void RubiksCube::Init()
-{		
+{
+	GLuint pickingColorID = glGetUniformLocation(pickedShape, "PickingColor");
 	unsigned int texIDs[3] = { 0 , 1, 0};
 	unsigned int slots[3] = { 0 , 1, 0 };
 	
-	AddShader("../res/shaders/pickingShader");	
+	AddShader("../res/shaders/pickingShader2");	
 	AddShader("../res/shaders/basicShader2");
 	//AddShader("../res/shaders/basicShader");
 	
@@ -103,6 +107,7 @@ void RubiksCube::Init()
 			for (int z = 0; z < n; z++)
 			{
 				AddShape(Cube, -1, TRIANGLES);
+				SetShapeShader(pickCounter, 0);
 				SetShapeShader(pickCounter, 1);
 				SetShapeMaterial(0, 0);
 				pickedShape = pickCounter;
@@ -111,10 +116,10 @@ void RubiksCube::Init()
 				ShapeTransformation(zTranslate, -(n-1) +2*z);
 				MyCube* c = new MyCube(-(n - 1) + 2 * x, -(n - 1) + 2 * y, -(n - 1) + 2 * z,pickCounter);
 				if (x == 0) {
-					walls[L]->setCubeAt(y,z,c);
+					walls[myLeft]->setCubeAt(y,z,c);
 				}
 				else if (x == n-1) {
-					walls[R]->setCubeAt(y,n-1-z,c);
+					walls[myRight]->setCubeAt(y,n-1-z,c);
 				}
 				if (y==0) {
 					walls[D]->setCubeAt(n-1-x,z,c);
@@ -134,7 +139,7 @@ void RubiksCube::Init()
 		}
 
 	}
-	//printMat();
+	printRGB();
 	
 	
 	//ReadPixel(); //uncomment when you are reading from the z-buffer
@@ -143,9 +148,9 @@ void RubiksCube::Init()
 void RubiksCube::Update(const glm::mat4 &MVP,const glm::mat4 &Model,const int  shaderIndx)
 {
 	Shader *s = shaders[shaderIndx];
-	int r = ((pickedShape+1) & 0x000000FF) >>  0;
-	int g = ((pickedShape+1) & 0x0000FF00) >>  8;
-	int b = ((pickedShape+1) & 0x00FF0000) >> 16;
+	int r = ((pickedShape) & 0x000000FF) >>  0;
+	int g = ((pickedShape) & 0x0000FF00) >>  8;
+	int b = ((pickedShape) & 0x00FF0000) >> 16;
 	if (shapes[pickedShape]->GetMaterial() >= 0 && !materials.empty())
 		BindMaterial(s, shapes[pickedShape]->GetMaterial());
 	//textures[0]->Bind(0);
@@ -160,6 +165,7 @@ void RubiksCube::Update(const glm::mat4 &MVP,const glm::mat4 &Model,const int  s
 		s->SetUniformMat4f("MVP", glm::mat4(1));
 		s->SetUniformMat4f("Normal", glm::mat4(1));
 	}
+	s->SetUniform4f("lightColor", r / 255.0f, g / 255.0f, b / 255.0f, 1.0f);
 	s->SetUniform1i("sampler1", materials[shapes[pickedShape]->GetMaterial()]->GetSlot(0));
 	if(shaderIndx!=2)
 		s->SetUniform1i("sampler2", materials[shapes[pickedShape]->GetMaterial()]->GetSlot(1));
@@ -248,6 +254,101 @@ void RubiksCube::doRotate(int wall)
 	//walls[wall]->rotate();
 }
 
+void RubiksCube::decGlobalSpeed()
+{
+	globalSpeed = globalSpeed--;
+	if (globalSpeed < Min_Sleep)
+	{
+		globalSpeed = Min_Sleep;
+	}
+}
+void RubiksCube::incGlobalSpeed()
+{
+	globalSpeed = globalSpeed++;
+	if (globalSpeed > Max_Sleep)
+	{
+		globalSpeed = Max_Sleep;
+	}
+
+}
+void RubiksCube::calcRGB(int id) 
+{
+	int r = ((id) & 0x000000FF) >> 0;
+	int g = ((id) & 0x0000FF00) >> 8;
+	int b = ((id) & 0x00FF0000) >> 16;
+
+	std::cout << "r, " << r << " g, " << g << " b, " << b << std::endl;
+
+}
+
+void RubiksCube::printRGB()
+{
+	printf(" Wall Right: \n");
+	for (int i = 0; i < n; i++)
+	{
+		for (int j = 0; j < n; j++)
+		{
+			std::cout << "id :" << walls[myRight]->getWall()[i][j]->getID();
+			calcRGB(walls[myRight]->getWall()[i][j]->getID());
+		}
+		printf("\n");
+	}
+	printf(" Wall UP: \n");
+	for (int i = 0; i < n; i++)
+	{
+		for (int j = 0; j < n; j++)
+		{
+			std::cout << "id :" << walls[U]->getWall()[i][j]->getID();
+			calcRGB(walls[U]->getWall()[i][j]->getID());
+		}
+			
+		printf("\n");
+	}
+	printf(" Wall DOWN: \n");
+	for (int i = 0; i < n; i++)
+	{
+		for (int j = 0; j < n; j++)
+		{
+			std::cout << "id :" << walls[D]->getWall()[i][j]->getID();
+			calcRGB(walls[D]->getWall()[i][j]->getID());
+		}
+			
+		printf("\n");
+	}
+	printf(" Wall LEFT: \n");
+	for (int i = 0; i < n; i++)
+	{
+		for (int j = 0; j < n; j++)
+		{
+			std::cout << "id :" << walls[myLeft]->getWall()[i][j]->getID();
+			calcRGB(walls[myLeft]->getWall()[i][j]->getID());
+		}
+			
+		printf("\n");
+	}
+	printf(" Wall BACK: \n");
+	for (int i = 0; i < n; i++)
+	{
+		for (int j = 0; j < n; j++)
+		{
+			std::cout << "id :" << walls[B]->getWall()[i][j]->getID();
+			calcRGB(walls[B]->getWall()[i][j]->getID());
+		}
+			
+		printf("\n");
+	}
+	printf(" Wall FORWARD: \n");
+	for (int i = 0; i < n; i++)
+	{
+		for (int j = 0; j < n; j++)
+		{
+			std::cout << "id :" << walls[F]->getWall()[i][j]->getID();
+			calcRGB(walls[F]->getWall()[i][j]->getID());
+		}
+			
+		printf("\n");
+	}
+}
 RubiksCube::~RubiksCube(void)
 {
 

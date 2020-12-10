@@ -3,8 +3,8 @@
 #include "MyCube.h"
 #include "Wall.h"
 
-#define R 0
-#define L 1
+#define myRight 0
+#define myLeft 1
 #define U 2
 #define D 3
 #define B 4
@@ -30,12 +30,14 @@ public:
 	void reverseRows(MyCube*** arr);
 	inline void setPicked(int i) { pickedShape = i; };
 	inline void setGlobalDir() { globalDir = -globalDir; };
-	inline void decGlobalSpeed() { globalSpeed = globalSpeed*3; };
-	inline void incGlobalSpeed() { globalSpeed = globalSpeed/3; };
+	void decGlobalSpeed();
+	void incGlobalSpeed();
 	inline int getGlobalSpeed() { return globalSpeed; };
 	inline Wall* getWall(int type) { return walls[type]; };
 	void doRotate(int wall);
 	void printMat();
+	void calcRGB(int id);
+	void printRGB();
 	~RubiksCube(void);
 private:
 	//MyCube**** rubCube;
@@ -43,5 +45,6 @@ private:
 	Wall** walls;
 	int globalDir;
 	float globalSpeed;
+
 };
 

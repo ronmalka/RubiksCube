@@ -145,8 +145,16 @@ void Scene::ShapeTransformation(int type, float amt)
 bool Scene::Picking(unsigned char data[4])
 {
 		pickedShape = -1;
+		float id = data[0];
+		if (id > 0)
+		{
+			pickedShape = id;
+			std::cout << "pickedShape : " << pickedShape << std::endl;
+			return true;
+		}
+		
 		return false;
-		//WhenPicked();	
+		
 }
 //return coordinates in global system for a tip of arm position is local system 
 void Scene::MouseProccessing(int button, int xrel, int yrel)
