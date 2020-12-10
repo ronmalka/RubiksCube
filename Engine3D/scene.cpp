@@ -146,7 +146,7 @@ bool Scene::Picking(unsigned char data[4])
 {
 		pickedShape = -1;
 		float id = data[0];
-		if (id > 0)
+		if (id >= 0)
 		{
 			pickedShape = id;
 			std::cout << "pickedShape : " << pickedShape << std::endl;
