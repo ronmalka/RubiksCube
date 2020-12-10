@@ -88,7 +88,7 @@ void RubiksCube::Init()
 	unsigned int texIDs[3] = { 0 , 1, 0};
 	unsigned int slots[3] = { 0 , 1, 0 };
 	
-	AddShader("../res/shaders/pickingShader2");	
+	AddShader("../res/shaders/pickingShader");	
 	AddShader("../res/shaders/basicShader2");
 	//AddShader("../res/shaders/basicShader");
 	
@@ -348,6 +348,10 @@ void RubiksCube::printRGB()
 			
 		printf("\n");
 	}
+}
+void RubiksCube::WhenPicked()
+{
+	pickedShape = -1;
 }
 RubiksCube::~RubiksCube(void)
 {

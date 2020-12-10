@@ -34,10 +34,13 @@ public:
 	void incGlobalSpeed();
 	inline int getGlobalSpeed() { return globalSpeed; };
 	inline Wall* getWall(int type) { return walls[type]; };
+	inline int getN() { return n; }
+	inline int getPickedShape() { return pickedShape; }
 	void doRotate(int wall);
 	void printMat();
 	void calcRGB(int id);
 	void printRGB();
+	void WhenPicked();
 	~RubiksCube(void);
 private:
 	//MyCube**** rubCube;

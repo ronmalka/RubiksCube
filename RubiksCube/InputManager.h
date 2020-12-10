@@ -34,16 +34,33 @@ void doRotate(RubiksCube* scn,Renderer* rndr,int wall) {
 			RubiksCube* scn = (RubiksCube*)rndr->GetScene();
 			double x2,y2;
 			glfwGetCursorPos(window,&x2,&y2);
-			if (rndr->Picking((int)x2, (int)y2))
+
+			if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
 			{
-				std::cout << "picked : " << std::endl;
-				rndr->UpdatePosition(x2, y2);
+				if (rndr->Picking((int)x2, (int)y2))
+				{
+					rndr->UpdatePosition(x2, y2);
+				}
 			}
 
 			if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS)
 			{
-				std::cout << "right_button : " << std::endl;
-				
+				if (rndr->Picking((int)x2, (int)y2))
+				{
+					for (int i = 0; i < 6; ++i) {
+						MyCube*** w = scn->getWall(i)->getWall();
+						for (int j = 0; j < scn->getN(); ++j) {
+							for (int k = 0; k < scn->getN(); ++k) {
+								if (w[j][k]->getID() == scn->getPickedShape()) {
+										doRotate(scn,rndr,i);
+										return;
+								}
+							}
+						}
+					}
+				}
+				scn->WhenPicked();
+
 			}
 				
 		}

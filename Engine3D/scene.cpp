@@ -150,9 +150,9 @@ bool Scene::Picking(unsigned char data[4])
 		{
 			pickedShape = id;
 			std::cout << "pickedShape : " << pickedShape << std::endl;
+			//WhenPicked();
 			return true;
 		}
-		
 		return false;
 		
 }
