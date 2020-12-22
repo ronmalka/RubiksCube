@@ -145,12 +145,11 @@ void Scene::ShapeTransformation(int type, float amt)
 bool Scene::Picking(unsigned char data[4])
 {
 		pickedShape = -1;
-		float id = data[0];
-		if (id >= 0)
+		float id = data[0] ;
+		if (id > 0)
 		{
-			pickedShape = id;
+			pickedShape = id - 1;
 			std::cout << "pickedShape : " << pickedShape << std::endl;
-			//WhenPicked();
 			return true;
 		}
 		return false;

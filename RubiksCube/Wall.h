@@ -12,6 +12,7 @@ public:
 	void rotate();
 	void printMat();
 	void swap(MyCube* c1, MyCube* c2);
+	~Wall();
 private:
 	MyCube*** wallOfCubes;
 	glm::vec3 axisOfRotate;

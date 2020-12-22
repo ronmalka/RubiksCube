@@ -139,7 +139,6 @@ void RubiksCube::Init()
 		}
 
 	}
-	printRGB();
 	
 	
 	//ReadPixel(); //uncomment when you are reading from the z-buffer
@@ -148,9 +147,9 @@ void RubiksCube::Init()
 void RubiksCube::Update(const glm::mat4 &MVP,const glm::mat4 &Model,const int  shaderIndx)
 {
 	Shader *s = shaders[shaderIndx];
-	int r = ((pickedShape) & 0x000000FF) >>  0;
-	int g = ((pickedShape) & 0x0000FF00) >>  8;
-	int b = ((pickedShape) & 0x00FF0000) >> 16;
+	int r = ((pickedShape + 1 ) & 0x000000FF) >>  0;
+	int g = ((pickedShape + 1) & 0x0000FF00) >>  8;
+	int b = ((pickedShape + 1) & 0x00FF0000) >> 16;
 	if (shapes[pickedShape]->GetMaterial() >= 0 && !materials.empty())
 		BindMaterial(s, shapes[pickedShape]->GetMaterial());
 	//textures[0]->Bind(0);
@@ -355,5 +354,9 @@ void RubiksCube::WhenPicked()
 }
 RubiksCube::~RubiksCube(void)
 {
-
+	for (size_t i = 0; i < 6; i++)
+	{
+		delete walls[i];
+	}
+	delete walls;
 }

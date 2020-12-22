@@ -120,49 +120,41 @@ void doRotate(RubiksCube* scn,Renderer* rndr,int wall) {
 				break;
 
 			case GLFW_KEY_SPACE:
-				std::cout << "direction" << std::endl;
 				scn->setGlobalDir();
 				break;
 
 			case GLFW_KEY_U:
 			{
-				std::cout << "up" << std::endl;
 				doRotate(scn,rndr, U);
 				break;
 			}
 			case GLFW_KEY_D:
 			{
-				std::cout << "down" << std::endl;
 				doRotate(scn, rndr, D);
 				break;
 			}
 			case GLFW_KEY_R:
 			{
-				std::cout << "right" << std::endl;
 				doRotate(scn, rndr, myRight);
 				break;
 			}
 			case GLFW_KEY_L:
 			{
-				std::cout << "left" << std::endl;
 				doRotate(scn, rndr, myLeft);
 				break;
 			}
 			case GLFW_KEY_F:
 			{
-				std::cout << "front" << std::endl;
 				doRotate(scn, rndr, F);
 				break;
 			}
 			case GLFW_KEY_B:
 			{
-				std::cout << "back" << std::endl;
 				doRotate(scn, rndr, B);
 				break;
 			}
 			case GLFW_KEY_M:
 			{
-				std::cout << "mix" << std::endl;
 				std::random_device generator;
 				std::uniform_int_distribution<int> distribution(0, 5);
 				for (int k = 0; k < 10; ++k) {
@@ -174,13 +166,11 @@ void doRotate(RubiksCube* scn,Renderer* rndr,int wall) {
 			case GLFW_KEY_Z:
 			{
 				scn->decGlobalSpeed();
-				std::cout << "globalSpeed : " << scn->getGlobalSpeed() << std::endl;
 				break;
 			}
 			case GLFW_KEY_A:
 			{
 				scn->incGlobalSpeed();
-				std::cout << "globalSpeed : " << scn->getGlobalSpeed() << std::endl;
 				break;
 			}
 			default:

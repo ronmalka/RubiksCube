@@ -60,3 +60,10 @@ void Wall::rotate()
 	//printMat();
 
 }
+Wall::~Wall() 
+{
+	for (int i = 0; i < n; i++) {
+		delete wallOfCubes[i] ;
+	}
+	delete wallOfCubes;
+}
